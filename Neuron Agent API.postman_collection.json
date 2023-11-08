@@ -1,0 +1,1545 @@
+{
+	"info": {
+		"_postman_id": "d9f41d0d-8d4d-4440-90e3-980736bb0ebf",
+		"name": "Neuron Agent API",
+		"description": "# Agent API\n\nThe Neuron® publishes an Agent API that can be used by agents that do not wish to, or are able to, connect to the Neuron® via any of the XMPP bindings available, such as standard binary socket, websocket or Synchronous HTTP (BOSH). Via the Agent API, the agent is permitted to do basic tasks, such as send messages, create Agent IDs, and sign contracts with such Agent IDs. The _Full API_ is available via XMPP.\n\n## API Keys\n\nTo create an account, you will need an _API Key_ and a _Secret_, which the operator of the Neuron® provides. You can contact the operator through the [feedback page](https://lab.tagroot.io/Feedback.md) on the corresponding neuron `https://DOMAIN/Feedback.md`, or go directly to the [Request API Key page](https://lab.tagroot.io/RequestApiKey.md) on the Neuron® `https://DOMAIN/RequestApiKey.md`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17249113"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Domain Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/DomainInfo",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"DomainInfo"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md)\n\nGets human-readable information about the domain of the server. This resource is accessed using `HTTP GET`, so there is no payload sent to resource. The request can be made anonymously. No authentication is required. This resource is typically called in the beginning of an on-boarding process, where the user is given a choice to select service provider (i.e. domain)."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    \r",
+									"    randomString = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"pm.environment.set(\"accountUsername\", jData[\"userName\"]);\r",
+									"pm.environment.set(\"accountPassword\", jData[\"password\"]);\r",
+									"\r",
+									"host = pm.environment.get(\"host\")\r",
+									"apiKey = pm.environment.get(\"apiKey\")\r",
+									"\r",
+									"s = CryptoJS.enc.Utf8.parse(jData[\"userName\"]+\":\"+host+\":\"+jData[\"eMail\"]+\":\"+jData[\"password\"]+\":\"+apiKey+\":\"+newNonce);\r",
+									"key = CryptoJS.enc.Utf8.parse(pm.environment.get(\"secret\"));\r",
+									"\r",
+									"signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(s, key));\r",
+									"pm.environment.set(\"signature\", signature);\r",
+									"\r",
+									"//console.log(pm.environment.get(\"nonce\"))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"jwt\", jsonData.jwt);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"\",\r\n    \"eMail\": \"\",\r\n    \"password\": \"\",\r\n    \"apiKey\": \"{{apiKey}}\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"signature\": \"{{signature}}\",\r\n    \"seconds\": 3600\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://neuron.saunter.tech/Agent/Account/Create",
+							"protocol": "https",
+							"host": [
+								"neuron",
+								"saunter",
+								"tech"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"Create"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md)\n\nCreates an agent account on the server (and logs in to it). This account can be used when logging in, using the Agent API, but also to connect to the Neuron® using any of the available XMPP bindings available. The account that is created, is considered a regular XMPP account on the broker.\n\nWhen first created, the account is in a disabled state. You need to validate the e-mail address provided in the request first, before the account can be enabled. An e-mail with a verification code will be sent to the e-mail address provided in the request.\n\n**Security Notice**: This resource requires an API Key and Secret to be provided. These are [requested from the operator](https://lab.tagroot.io/RequestApiKey.md) and must be protected. If compromized, the operator can choose to disable the key. This resource should therefore only be used by clients that can protect such credentials. If creating an account in an environment where protecting such credentials is not possible (such as a web page running on a client browser), use the [CreateWebForm](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/CreateWebForm.md) resource instead. Eacn API Key is given a number of accounts that can be created with that key. If that limit is reached, no more accounts can be created using that key, until the limit is increased or existing accounts created by that API Key is deleted."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/GetSessionToken",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"GetSessionToken"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md)\n\nAllows the client to get session information about a newly created account, created using a web form, without having to provide user credentials again."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eMail\": \"\",\r\n    \"code\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/VerifyEMail",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"VerifyEMail"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md)\n\nVerifies an e-mail address corresponding to an account that is being created. When creating an account using [/Account/Create](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md), the account is at first _disabled_. This means, it cannot be used actively in the API. To enabled an account, you need to verify the e-mail address provided when creating the account. The account creation call will send an e-mail with a code. This code needs to be provided in a call to this resource, together with the e-mail address."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    randomString = \"\";\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\")\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"password = pm.environment.get(\"accountPassword\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+newNonce;\r",
+									"data = CryptoJS.enc.Utf8.parse(s1);\r",
+									"console.log(data)\r",
+									"key = CryptoJS.enc.Utf8.parse(password);\r",
+									"signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(data, key));\r",
+									"pm.environment.set(\"signature\", signature);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"jwt\", jsonData.jwt);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"{{accountUsername}}\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"signature\": \"{{signature}}\",\r\n    \"seconds\": 3600\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/Login",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"Login"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md)\n\nAllows the client to authenticate itself with the API. This method is an alternative to the [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resource that allows the client to login using traditional HTTP means.\n\nIf authentication succeeds, a _JSON Web Token_ (or _JWT_) is returned to the client. This token can be used as a [Bearer token](https://www.rfc-editor.org/rfc/rfc6750) in subsequent calls to the API. It needs to be [refreshed](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md) before it expires."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"jwt\", jsonData.jwt);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seconds\": 3600\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/Refresh",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"Refresh"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md)\n\nAllows the client to refresh a session token, maintaining the current login, regardless of method used in the original login.\n\nIf authentication succeeds, a new _JSON Web Token_ (or _JWT_) is returned to the client. This replaces the token provided in the first login request or subsequent refresh requests. The token also needs to be refreshed before it expires.\n\nIf failing to refresh a token, or if the token expires, a new login must be performed. This can be done using either of the [Login](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md) or [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resources"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/Logout",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"Logout"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Logout.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Logout.md)\n\nAllows the client to logout from the current session. This stops refreshing the token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Xmpp",
+			"item": []
+		},
+		{
+			"name": "Storage",
+			"item": [
+				{
+					"name": "Save Private Xml",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"xml\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Storage/SavePrivateXml",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Storage",
+								"SavePrivateXml"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md)\n\nAllows the client to save private information on the server using XML"
+					},
+					"response": []
+				},
+				{
+					"name": "Load Private Xml",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"localName\": \"\",\r\n    \"namespace\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Storage/LoadPrivateXml",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Storage",
+								"LoadPrivateXml"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md)\n\nAllows the client to load previously saved private XML information from the server"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Crypto",
+			"item": [
+				{
+					"name": "Get Algorithms",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Crypto/GetAlgorithms",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Crypto",
+								"GetAlgorithms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/* Key secret */\r",
+									"let keySecret = \"\";\r",
+									"pm.environment.set(\"keySecret\", keySecret);\r",
+									"/* ---------- */\r",
+									"\r",
+									"\r",
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    \r",
+									"    randomString = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"pm.environment.set(\"keyId\", jData[\"id\"]);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"s1String = username+\":\"+host+\":\"+jData[\"localName\"]+\":\"+jData[\"namespace\"]+\":\"+jData[\"id\"];\r",
+									"s1 = CryptoJS.enc.Utf8.parse(s1String);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(s1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = CryptoJS.enc.Utf8.parse(s1String+\":\"+KeySignature+\":\"+newNonce);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(s2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"localName\": \"{{localName}}\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"id\": \"\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"keySignature\": \"{{keySignature}}\",\r\n    \"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Crypto/CreateKey",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Crypto",
+								"CreateKey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Key",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\": \"{{keyId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Crypto/GetPublicKey",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Crypto",
+								"GetPublicKey"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Legal",
+			"item": [
+				{
+					"name": "Validate Pnr",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"countryCode\": \"SE\",\r\n    \"pnr\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/ValidatePnr",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"ValidatePnr"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md)\n\nAllows the client to validate a personal number before using it to apply for a Legal Identity"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Application Attributes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetApplicationAttributes",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetApplicationAttributes"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md)\n\nAllows the client to get important attributes necessary to perform a correct ID Application"
+					},
+					"response": []
+				},
+				{
+					"name": "Apply For Id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    \r",
+									"    randomString = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"console.log(s1);\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+newNonce;\r",
+									"for(property in jData['Properties']){\r",
+									"    s2 += \":\"+jData['Properties'][property]['name']+\":\"+jData['Properties'][property]['value'];\r",
+									"}\r",
+									"console.log(s2)\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);\r",
+									"//throw new Error();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"legalId\", jsonData.Identity.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Referer",
+								"value": "saunter.tech",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\": \"{{keyId}}\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"keySignature\": \"{{keySignature}}\",\r\n    \"requestSignature\": \"{{signature}}\",\r\n    \"Properties\": [\r\n        {\r\n            \"name\": \"FIRST\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"LAST\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"PNR\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"ZIP\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"COUNTRY\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"ADDR\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"CITY\",\r\n            \"value\": \"\"\r\n        },{\r\n            \"name\": \"REGION\",\r\n            \"value\": \"\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/ApplyId",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"ApplyId"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md)\n\nAllows the client to apply for a new Legal Identity on the server. The application must be signed using one of the keys created by the client\n\nRequest:\n\n``` json\n{\n    \"keyId\": Required(Str(PKeyId)),\n    \"nonce\": Required(Str(PNonce)),\n    \"keySignature\": Required(Str(PKeySignature)),\n    \"requestSignature\": Required(Str(PRequestSignature)),\n    \"Properties\":\n    {\n        \"name\": Required(Str(PPropertyName)),\n        \"value\": Required(Str(PPropertyValue))\n    }?[]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Ready for approval",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"legalId\": \"{{legalId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/ReadyForApproval",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"ReadyForApproval"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md)\n\nWhen an ID application is ready (all attachments have been signed and uploaded), the client can call this resource to flag the application as ready for approval. This will execute any automated onboarding procedures to analyze the application, and, if passing them, will take the identity to the approved state. They can also take the application to the rejected state, in case they find the information invalid."
+					},
+					"response": []
+				},
+				{
+					"name": "Get service providers for id review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"legalId\": \"{{legalId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetServiceProvidersForIdReview",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetServiceProvidersForIdReview"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md)\n\nAllows the client to retrieve a list of available service providers that can be used to review a recent ID application"
+					},
+					"response": []
+				},
+				{
+					"name": "Select review service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"serviceId\": \"\",\r\n    \"serviceProvider\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/SelectReviewService",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"SelectReviewService"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SelectReviewService.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SelectReviewService.md)\n\nAllows the client to select an internal peer review service, for reviewing a recent identity application\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of internal peer review service. |\n| `PServiceProvider` | Type (class name) of service provider. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize access to id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"legalId\": \"{{legalId}}\",\r\n    \"remoteId\": \"\",\r\n    \"authorized\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/AuthorizeAccessToId",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"AuthorizeAccessToId"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Legal Identities to a remote party. When (if) the remote party requests the ID, the broker will return it automatically, if already authorized. If not authorized, a petition to access the identity will be sent to the client for manual approval (or rejection)."
+					},
+					"response": []
+				},
+				{
+					"name": "Petition Peer Review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/PetitionPeerReview",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"PetitionPeerReview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"contractId\", jsonData.Contract.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"templateId\": \"\",\r\n    \"visibility\": \"Public\",\r\n    \"Parameters\": [\r\n        {\r\n            \"name\": \"\",\r\n            \"value\": \"\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/CreateContract",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"CreateContract"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md)\n\nAllows the client to create a new smart contract, based on an existing (and approved) contract template. The request must be signed using one of the keys created by the client.\n\nRequest\n\n``` json\n{\n    \"templateId\": Required(Str(PTemplateId)),\n    \"visibility\": Required(Str(PVisibility)),\n    \"Parts\":\n    {\n        \"role\": Required(Str(PRole)),\n        \"legalId\": Required(Str(PLegalId))\n    }?[],\n    \"Parameters\":\n    {\n        \"name\": Required(Str(PParameterName)),\n        \"value\": Required(Str(PParameterValue))\n    }?[]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Identity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"legalId\": \"{{legalId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetIdentity",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetIdentity"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md)\n\nAllows the client to get an Identity. If the Identity belongs to someone else, and the client is not authorized access to the Identity, an error will be returned.\n\n**Note**: Neurons are federated. You can get identities created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contract",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contractId\": \"{{contractId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetContract",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetContract"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md)\n\nAllows the client to get a Smart Contract. If the Contract belongs to someone else, and the client is not authorized access to the Contract, an error will be returned.\n\n**Note**: Neurons are federated. You can get contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Contract",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    \r",
+									"    randomString = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"host = pm.environment.get(\"host\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"nameSpace = pm.environment.get(\"namespace\");\r",
+									"keyId = pm.environment.get(\"keyId\");\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+nameSpace+\":\"+keyId;\r",
+									"data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"legalId = pm.environment.get(\"legalId\");\r",
+									"contractId = pm.environment.get(\"contractId\")\r",
+									"role = jData[\"role\"];\r",
+									"accountSecret = pm.environment.get(\"accountPassword\");\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+newNonce+\":\"+legalId+\":\"+contractId+\":\"+role;\r",
+									"data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(accountSecret);\r",
+									"\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\": \"{{keyId}}\",\r\n    \"legalId\": \"{{legalId}}\",\r\n    \"contractId\": \"{{contractId}}\",\r\n    \"role\": \"Creator\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"keySignature\": \"{{keySignature}}\",\r\n    \"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/SignContract",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"SignContract"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md)\n\nAllows the client to sign a smart contract.\n\n**Note**: Neurons are federated. You can sign contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Identities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetIdentities",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetIdentities"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md)\n\nGets the account’s legal identities"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Created Contracts",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"offset\": 0,\r\n    \"maxCount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/GetCreatedContracts",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"GetCreatedContracts"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md)\n\nGets smart contracts the account has created."
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize Access To Id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contractId\": \"{{contractId}}\",\r\n    \"remoteId\": \"\",\r\n    \"authorized\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/AuthorizeAccessToId",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"AuthorizeAccessToId"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Smart Contracts (or one of the Smart Contracts for which the client is part) to a remote party. When (if) the remote party requests access to the the Smart Contract, the broker will return it automatically, if already authorized. If not authorized, a petition to access the Smart Contract will be sent to the clients of the part of the contract for manual approval"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Get Balance",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetBalance",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetBalance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process eDaler URI",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uri\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/ProcessEDalerUri",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"ProcessEDalerUri"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tokens",
+			"item": [
+				{
+					"name": "Get Contract Tokens",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contractId\": \"{{contractId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetContractTokens",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetContractTokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tokens",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetTokens",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetTokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\":\"{{tokenId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetToken",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Text Note",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"note\": \"Test\",\r\n    \"personal\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/AddTextNote",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"AddTextNote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token Events",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetTokenEvents",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetTokenEvents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add XML Note",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"note\": \"\",\r\n    \"personal\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/AddXmlNote",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"AddXmlNote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Creation Attributes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetCreationAttributes",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetCreationAttributes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Description",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"reportFormat\": \"Markdown\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetDescription",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetDescription"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "State machines",
+			"item": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "nonce",
+			"value": ""
+		}
+	]
+}
