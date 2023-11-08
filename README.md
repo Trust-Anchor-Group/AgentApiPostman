@@ -1,5 +1,5 @@
 # Neuron Agent API Postman Collection
-
+Postman can be downloaded here https://www.postman.com/. It can be used both in the browser and as a desktop app, but i recommend using the desktop app.
 
 ## Import
 Open Postman and press the import button at the top of the workspace area, drag and drop both the collection and environment files.
