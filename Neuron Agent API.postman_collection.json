@@ -327,7 +327,68 @@
 		},
 		{
 			"name": "Xmpp",
-			"item": []
+			"item": [
+				{
+					"name": "Pop Messages",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"maxCount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/PopMessages",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"PopMessages"
+							]
+						},
+						"description": "[https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md)\n\nGets messages for the account from the server"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Text Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\",\r\n\t\"message\": \"\",\r\n\t\"subject\": \"\",\r\n\t\"language\": \"\",\r\n\t\"id\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendTextMessage",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendTextMessage"
+							]
+						},
+						"description": "Allows the client to send a plain text _chat_ message from its account to an XMPP recipient.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The plain text message to send. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Storage",
@@ -1058,6 +1119,71 @@
 					"response": []
 				},
 				{
+					"name": "Sign Data",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"legalId = pm.environment.get(\"legalId\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+jData[\"dataBase64\"]+\":\"+legalId;\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"dataBase64\": \"\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/SignData",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"SignData"
+							]
+						},
+						"description": "Allows the client to sign binary data."
+					},
+					"response": []
+				},
+				{
 					"name": "Get Identities",
 					"request": {
 						"method": "POST",
@@ -1227,6 +1353,64 @@
 								"Agent",
 								"Wallet",
 								"ProcessEDalerUri"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Service Providers For Buying EDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetServiceProvidersForBuyingEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetServiceProvidersForBuyingEDaler"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Service Providers For Selling EDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetServiceProvidersForSellingEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetServiceProvidersForSellingEDaler"
 							]
 						}
 					},
@@ -1503,7 +1687,68 @@
 		},
 		{
 			"name": "State machines",
-			"item": []
+			"item": [
+				{
+					"name": "Get Current State",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/StateMachines/GetCurrentState",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"StateMachines",
+								"GetCurrentState"
+							]
+						},
+						"description": "Gets the current state of a state machine, associated with a token."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"tokenId\": \"{{tokenId}}\",\r\n\t\"reportType\": \"Present\",\r\n\t\"reportFormat\": \"Markdown\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/StateMachines/CreateReport",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"StateMachines",
+								"CreateReport"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/StateMachines/CreateReport.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/StateMachines/CreateReport.md)\n\nCreates a report relating to a state machine associated with a token."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
