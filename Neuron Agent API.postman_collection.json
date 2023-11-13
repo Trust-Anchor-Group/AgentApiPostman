@@ -322,6 +322,36 @@
 						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Logout.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Logout.md)\n\nAllows the client to logout from the current session. This stops refreshing the token"
 					},
 					"response": []
+				},
+				{
+					"name": "Recover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"userName\": \"\",\r\n\t\"personalNr\": \"\",\r\n\t\"country\": \"\",\r\n\t\"eMail\": \"\",\r\n\t\"phoneNr\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Account/Recover",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Account",
+								"Recover"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Recover.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Recover.md)\n\nAllows a user to recover its account, given that it can provide either the user name or personal number, in combination with either the e-mail address or phone number used when creating a legal identity on the account. If information match, any of the following may happen:\n\n- If the account has no assets (eDaler®, Neuro-Features™, etc.), and no legal identities registered, a recovery e-mail will be sent to the e-mail registered with the account. The e-mail will contain a clickable QR-code that will allow the agent app to recover the account, using the method outlined below.\n- If the account has a peer-reviewed legal identity, signature requests will be sent to the peers, to confirm you are trying to recover the account. The user should contact the peers to prepare them for the recovery procedure, so they can receive it and authorize access to the account.\n- If the account is approved by the operator of the Neuron®, a notification will be sent to the operator, that the user tries to recover its account. The user should contact the Neuron® operator to continue the recovery procedure.\n    \n\n**Note**: Any registered legal identities on the account will be assumed to be compromized. After recovery of account, a new legal identity must be created.\n\n**Note 2**: The call is subject to login-audit rules, and the client can become temporarily blocked if calling resource too frequently. Abuse can lead to permanent block of client.\n\n**Note 3**: For reasons of security, no information is returned to the caller, indicating if the request was successful or not, or how to proceed with the recovery. If messages were sent, they will be received by recipients, and processed accordingly. There is one exception to this rule: If account name is not provided, and personal number and country is provided, and multiple accounts exist on the server, an HTTP 422 `Unprocessable Entity` error is returned. If this happens, the client must specify an account name to recover account.\n\n**Note 4**: The client does not have to create a session to access this resource. Other applications (such as those using an XMPP connection to connect to the network) can also use this resource to recover accounts\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PUserName` | User name of account. |\n| `PPersonalNr` | Personal number registered in an approved legal identity on the account. |\n| `PCountry` | Country code, corresponding to country where personal number is registered. |\n| `PEMail` | e-Mail address registered for the acount. |\n| `PPhoneNr` | Phone number registered in an approved legal identity on the account. |"
+					},
+					"response": []
 				}
 			]
 		},
@@ -1122,6 +1152,83 @@
 					"response": []
 				},
 				{
+					"name": "Add ID Attachment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomString(length = 50) {\r",
+									"    dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'\r",
+									"    \r",
+									"    randomString = \"\";\r",
+									"\r",
+									"    for (let i = 0; i < length; i++)\r",
+									"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+									"    return randomString;\r",
+									"}\r",
+									"\r",
+									"newNonce = randomString();\r",
+									"\r",
+									"pm.environment.set(\"nonce\", newNonce);\r",
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+newNonce+\":\"+jData[\"attachmentBase64\"] + \":\" + jData[\"attachmentFileName\"] + \":\" + jData[\"attachmentContentType\"];\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"nonce\": \"{{nonce}}\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\",\r\n\t\"attachmentBase64\": \"\",\r\n\t\"attachmentFileName\": \"\",\r\n\t\"attachmentContentType\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/AddIdAttachment",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"AddIdAttachment"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md)\n\nAllows the client to add an attachment to a Legal Identity application.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the Identity application. |\n| `PLegalId` | Identity of the Legal Identity Application. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n| `PAttachmentBase64` | Base-64-encoding of attachment to add to the Identity application. |\n| `PAttachmentFileName` | File name of attachment. |\n| `PAttachmentContentType` | Content-Type of attachment |"
+					},
+					"response": []
+				},
+				{
 					"name": "Ready for approval",
 					"request": {
 						"method": "POST",
@@ -1243,9 +1350,53 @@
 				},
 				{
 					"name": "Petition Peer Review",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"legalId = pm.environment.get(\"legalId\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+jData[\"petitionId\"]+\":\"+jData[\"purpose\"]+\":\"+legalId+\":\"+jData[\"remoteId\"];\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"remoteId\": \"\",\r\n\t\"petitionId\": \"\",\r\n\t\"purpose\": \"\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://{{host}}/Agent/Legal/PetitionPeerReview",
 							"protocol": "https",
@@ -1257,7 +1408,138 @@
 								"Legal",
 								"PetitionPeerReview"
 							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionPeerReview.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionPeerReview.md)\n\nAllows the client to petition a peer to review an ID application.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the petition. It must correspond to the key used when signing the Legal Identity application that will be used to sign the petition. |\n| `PLegalId` | Identifier of the Legal Identity that will be used to sign the petition, and that will be reviewed by the peer. |\n| `PRemoteId` | Identifier of the remote legal identity the client requests review the identity application. |\n| `PPetitionId` | An identifier of the request, the client can use to correlate asynchronous responses with the corresponding petition request. |\n| `PPurpose` | A human readable text that will be presented to the remote user, describing the purpose of the petition. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Petition ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"legalId = pm.environment.get(\"legalId\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+jData[\"petitionId\"]+\":\"+jData[\"purpose\"]+\":\"+legalId+\":\"+jData[\"remoteId\"];\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);"
+								],
+								"type": "text/javascript"
+							}
 						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"remoteId\": \"\",\r\n\t\"petitionId\": \"\",\r\n\t\"purpose\": \"\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/PetitionId",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"PetitionId"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionId.md)\n\nAllows the client to petition the owner of a Legal Identity, for information about the identity.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the petition. It must correspond to the key used when signing the Legal Identity application that will be used to sign the petition. |\n| `PLegalId` | Identifier of the Legal Identity that will be used to sign the petition. |\n| `PRemoteId` | Identifier of the remote legal identity the client requests access to. |\n| `PPetitionId` | An identifier of the request, the client can use to correlate asynchronous responses with the corresponding petition request. |\n| `PPurpose` | A human readable text that will be presented to the remote user, describing the purpose of the petition. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Petition Signature",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"data = pm.request.body;\r",
+									"body = data[data.mode];\r",
+									"jData = JSON.parse(body);\r",
+									"\r",
+									"host = pm.environment.get(\"host\");\r",
+									"\r",
+									"username = pm.environment.get(\"accountUsername\");\r",
+									"\r",
+									"keyId = pm.environment.get(\"keyId\")\r",
+									"keySecret = pm.environment.get(\"keySecret\");\r",
+									"localName = pm.environment.get(\"localName\");\r",
+									"namespace = pm.environment.get(\"namespace\");\r",
+									"legalId = pm.environment.get(\"legalId\");\r",
+									"\r",
+									"s1 = username+\":\"+host+\":\"+localName+\":\"+namespace+\":\"+keyId;\r",
+									"Data1 = CryptoJS.enc.Utf8.parse(s1);\r",
+									"key1 = CryptoJS.enc.Utf8.parse(keySecret);\r",
+									"KeySignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data1, key1));\r",
+									"pm.environment.set(\"keySignature\", KeySignature);\r",
+									"\r",
+									"s2 = s1+\":\"+KeySignature+\":\"+jData[\"petitionId\"]+\":\"+jData[\"purpose\"]+\":\"+legalId+\":\"+jData[\"remoteId\"] + \":\" + jData[\"contentBase64\"];\r",
+									"Data2 = CryptoJS.enc.Utf8.parse(s2);\r",
+									"key2 = CryptoJS.enc.Utf8.parse(pm.environment.get(\"accountPassword\"));\r",
+									"RequestSignature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(Data2, key2));\r",
+									"pm.environment.set(\"signature\", RequestSignature);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"remoteId\": \"\",\r\n\t\"contentBase64\": \"\",\r\n\t\"petitionId\": \"\",\r\n\t\"purpose\": \"\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Legal/PetitionSignature",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Legal",
+								"PetitionSignature"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionSignature.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/PetitionSignature.md)\n\nAllows the client to petition the owner of a Legal Identity for a digital signature on some digital content.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the petition. It must correspond to the key used when signing the Legal Identity application that will be used to sign the petition. |\n| `PLegalId` | Identifier of the Legal Identity that will be used to sign the petition. |\n| `PRemoteId` | Identifier of the remote legal identity the client requests access to. |\n| `PPetitionId` | An identifier of the request, the client can use to correlate asynchronous responses with the corresponding petition request. |\n| `PPurpose` | A human readable text that will be presented to the remote user, describing the purpose of the petition. |\n| `PContentBase64` | Base64-encoded binary content requested to be signed by the remote legal identity. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |"
 					},
 					"response": []
 				},
@@ -1764,6 +2046,36 @@
 								"GetServiceProvidersForSellingEDaler"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction Information",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"transactionId\": \"\",\r\n\t\"tabId\": \"\",\r\n\t\"functionName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetTransactionInformation",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetTransactionInformation"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md)\n\nAllows the client to get updated transaction information from the server. It also allows the client to re-register the current Tab ID (from `Events.js`) and function to call, in case changes are registered with the server-side transaction object. Call this function to restart event notification if you navigate between pages.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTransactionId` | ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |"
 					},
 					"response": []
 				}
