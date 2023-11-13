@@ -329,36 +329,6 @@
 			"name": "Xmpp",
 			"item": [
 				{
-					"name": "Pop Messages",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"maxCount\": 5\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://{{host}}/Agent/Xmpp/PopMessages",
-							"protocol": "https",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"Agent",
-								"Xmpp",
-								"PopMessages"
-							]
-						},
-						"description": "[https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md)\n\nGets messages for the account from the server"
-					},
-					"response": []
-				},
-				{
 					"name": "Send Text Message",
 					"request": {
 						"method": "POST",
@@ -385,6 +355,387 @@
 							]
 						},
 						"description": "Allows the client to send a plain text _chat_ message from its account to an XMPP recipient.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The plain text message to send. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Formatted Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\",\r\n\t\"message\": \"\",\r\n\t\"subject\": \"\",\r\n\t\"language\": \"\",\r\n\t\"id\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendFormattedMessage",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendFormattedMessage"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md)\n\nAllows the client to send a formatted _chat_ message from its account to an XMPP recipient. A formatted message contains the message in plain text, Markdown and HTML. The recipient, depending on capabilities, will select the representation it handles best to present the message.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The [Markdown](https://lab.tagroot.io/Markdown.md) body of the message to send. This Markdown is converted to plain text, HTML and also sent as Markdown to the recipient, who can choose which representation to present. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Send XML Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\",\r\n\t\"subject\": \"\",\r\n\t\"language\": \"\",\r\n\t\"id\": \"\",\r\n    \"Xml\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendXmlMessage",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendXmlMessage"
+							]
+						},
+						"description": "Allows the client to send a custom XML _normal_ message from its account to an XMPP recipient.  \n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n| `PXml` | The XML message to send. It can be sent as text or directly in XML (if sent embedded in XML). |"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Presence Subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\",\r\n\t\"customXml\": \"\",\r\n\t\"language\": \"\",\r\n\t\"id\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendPresenceSubscription",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendPresenceSubscription"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md)\n\nAllows the client to send a presence subscription from its account to an XMPP recipient. If the account to which the client is logged in has an approved Legal ID associated with it, this ID will be included in the request, to allow the recipient to know who has made the request.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PCustomXml` | Optional Custom XML that can be added to the presence subscription request. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Presence Unsubscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"to\": \"\",\r\n    \"id\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendPresenceUnsubscription",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendPresenceUnsubscription"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md)\n\nAllows the client to send a presence unsubscription from its account to an XMPP recipient.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Presence Subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendSubscriptionAccepted",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendSubscriptionAccepted"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md)\n\nAllows the client to accept a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Decline Presence Subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"to\": \"\",\r\n    \"id\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SendSubscriptionDeclined",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SendSubscriptionDeclined"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md)\n\nAllows the client to decline a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Roster",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"offset\": 0,\r\n    \"maxCount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/GetRoster",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"GetRoster"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md)\n\nGets the account’s roster\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the roster where response begins. |\n| `PMaxCount` | Maximum number of roster items to return. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Roster Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bareJid\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/GetRosterItem",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"GetRosterItem"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md)\n\nGets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Roster Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"bareJid\": \"\",\r\n\t\"name\": \"\",\r\n\t\"Groups\": [\"\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/SetRosterItem",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"SetRosterItem"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md)\n\nSets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PName` | Name to assign to the roster item. |\n| `PGroups` | Groups to assign to the roster item. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Roster Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"bareJid\": \"\",\r\n\t\"pendingSubscription\": false,\r\n\t\"status\": \"\",\r\n\t\"name\": \"\",\r\n\t\"Groups\": [\"\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/RemoveRosterItem",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"RemoveRosterItem"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md)\n\nRemoves a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Presence Probe",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/PresenceProbe",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"PresenceProbe"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md)\n\nGets the latest presence issued by a contact in your roster who has approved your presence subscription request.\n\n**Note**: The result to the presence probe request will give you the latest _Full JID_ published by the contact. This _Full JID_ can be used to make directed _information queries_ to the contact.\n\n**Security Note**: You are only allowed to send a presence probe to contacts that have approved a presence subscription from you.  \n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Information Query",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"to\": \"\",\r\n\t\"type\": \"\",\r\n\t\"xml\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/InformationQuery",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"InformationQuery"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md)\n\nSends an Information Query (`iq`) to an entity on the XMPP network, given its _Full JID_. For connected entities, you need to have an presence subscription to that entity, approved by the entity, to get the _Full JID_. You get the _Full JID_ using the [Presence Probe](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md) resource.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |\n| `PType` | Type of Information Query. Must be `get` or `set`. |\n| `PQuery` | Valid XML (or string-representation of valid XML) of the query to send. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Pop Messages",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"maxCount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Xmpp/PopMessages",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Xmpp",
+								"PopMessages"
+							]
+						},
+						"description": "[https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md)\n\nGets messages for the account from the server"
 					},
 					"response": []
 				}
