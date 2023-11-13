@@ -1050,7 +1050,7 @@
 					"response": []
 				},
 				{
-					"name": "Apply For Id",
+					"name": "Apply For ID",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1259,7 +1259,7 @@
 					"response": []
 				},
 				{
-					"name": "Get service providers for id review",
+					"name": "Get Service Providers For ID Review",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1289,7 +1289,7 @@
 					"response": []
 				},
 				{
-					"name": "Select review service",
+					"name": "Select Review Service",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1319,7 +1319,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize access to id",
+					"name": "Authorize Access To ID",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1455,7 +1455,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"remoteId\": \"\",\r\n\t\"petitionId\": \"\",\r\n\t\"purpose\": \"\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
+							"raw": "{\r\n\t\"keyId\": \"{{keyId}}\",\r\n\t\"legalId\": \"{{legalId}}\",\r\n\t\"remoteId\": \"test\",\r\n\t\"petitionId\": \"test\",\r\n\t\"purpose\": \"test\",\r\n\t\"keySignature\": \"{{keySignature}}\",\r\n\t\"requestSignature\": \"{{signature}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1888,7 +1888,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize Access To Id",
+					"name": "Authorize Access To ID",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1992,7 +1992,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Service Providers For Buying EDaler",
+					"name": "Get Service Providers For Buying eDaler",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -2021,7 +2021,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Service Providers For Selling EDaler",
+					"name": "Get Service Providers For Selling eDaler",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -2046,6 +2046,66 @@
 								"GetServiceProvidersForSellingEDaler"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initiatie Buying eDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"serviceId\": \"\",\r\n\t\"serviceProvider\": \"\",\r\n\t\"amount\": 0,\r\n\t\"currency\": \"EUR\",\r\n\t\"successUrl\": \"https://www.example.com/success\",\r\n\t\"failureUrl\": \"https://www.example.com/fail\",\r\n\t\"cancelUrl\": \"https://www.example.com/cancel\",\r\n\t\"transactionId\": \"\",\r\n\t\"tabId\": \"\",\r\n\t\"functionName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/InitiateBuyEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"InitiateBuyEDaler"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md)\n\nAllows the client to initiate the process of buying eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.  \n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to buy. |\n| `PCurrency` | Currency of eDaler to buy. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Initiate Sell eDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"serviceId\": \"\",\r\n\t\"serviceProvider\": \"\",\r\n\t\"amount\": 0,\r\n\t\"currency\": \"EUR\",\r\n\t\"successUrl\": \"https://www.example.com/success\",\r\n\t\"failureUrl\": \"https://www.example.com/fail\",\r\n\t\"cancelUrl\": \"https://www.example.com/cancel\",\r\n\t\"transactionId\": \"\",\r\n\t\"tabId\": \"\",\r\n\t\"functionName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/InitiateSellEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"InitiateSellEDaler"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md)\n\nAllows the client to initiate the process of selling eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.  \nStartFragment\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to sell. |\n| `PCurrency` | Currency of eDaler to sell. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\nEndFragment"
 					},
 					"response": []
 				},
