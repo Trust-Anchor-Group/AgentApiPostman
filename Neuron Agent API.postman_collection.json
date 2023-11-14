@@ -27,7 +27,7 @@
 								"DomainInfo"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md)\n\nGets human-readable information about the domain of the server. This resource is accessed using `HTTP GET`, so there is no payload sent to resource. The request can be made anonymously. No authentication is required. This resource is typically called in the beginning of an on-boarding process, where the user is given a choice to select service provider (i.e. domain)."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/DomainInfo.md)\n\nGets human-readable information about the domain of the server. This resource is accessed using `HTTP GET`, so there is no payload sent to resource. The request can be made anonymously. No authentication is required. This resource is typically called in the beginning of an on-boarding process, where the user is given a choice to select service provider (i.e. domain).\n\n## Input Parameters\n\n| Header | Description |\n| --- | --- |\n| `Accept-Language` | The `Accept-Language` is used to select which language to use for human-readable strings returned. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PDomain` | Domain name of server. |\n| `PUseEncryption` | If encryption is enabled on domain. |\n| `PHumanReadableName` | A human-readable name given to the server domain. |\n| `PHumanReadableDescripton` | A human-readable description describing the purpose of the domain. |"
 					},
 					"response": []
 				},
@@ -109,7 +109,7 @@
 								"Create"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md)\n\nCreates an agent account on the server (and logs in to it). This account can be used when logging in, using the Agent API, but also to connect to the Neuron® using any of the available XMPP bindings available. The account that is created, is considered a regular XMPP account on the broker.\n\nWhen first created, the account is in a disabled state. You need to validate the e-mail address provided in the request first, before the account can be enabled. An e-mail with a verification code will be sent to the e-mail address provided in the request.\n\n**Security Notice**: This resource requires an API Key and Secret to be provided. These are [requested from the operator](https://lab.tagroot.io/RequestApiKey.md) and must be protected. If compromized, the operator can choose to disable the key. This resource should therefore only be used by clients that can protect such credentials. If creating an account in an environment where protecting such credentials is not possible (such as a web page running on a client browser), use the [CreateWebForm](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/CreateWebForm.md) resource instead. Eacn API Key is given a number of accounts that can be created with that key. If that limit is reached, no more accounts can be created using that key, until the limit is increased or existing accounts created by that API Key is deleted."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md)\n\nCreates an agent account on the server (and logs in to it). This account can be used when logging in, using the Agent API, but also to connect to the Neuron® using any of the available XMPP bindings available. The account that is created, is considered a regular XMPP account on the broker.\n\nWhen first created, the account is in a disabled state. You need to validate the e-mail address provided in the request first, before the account can be enabled. An e-mail with a verification code will be sent to the e-mail address provided in the request.\n\n**Security Notice**: This resource requires an API Key and Secret to be provided. These are [requested from the operator](https://lab.tagroot.io/RequestApiKey.md) and must be protected. If compromized, the operator can choose to disable the key. This resource should therefore only be used by clients that can protect such credentials. If creating an account in an environment where protecting such credentials is not possible (such as a web page running on a client browser), use the [CreateWebForm](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/CreateWebForm.md) resource instead. Eacn API Key is given a number of accounts that can be created with that key. If that limit is reached, no more accounts can be created using that key, until the limit is increased or existing accounts created by that API Key is deleted.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PUserName` | User Name of the account to create. |\n| `PEMail` | e-Mail address of the user. |\n| `PPassword` | Password to use. |\n| `PApiKey` | API Key to use, to get privileges to create an account. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PSignature` | Cryptographic signature of request. |\n| `PSeconds` | Requested number of seconds before the JWT token that will be issued expires. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCreated` | When account was created (server timestamp). |\n| `PEnabled` | If account is enabled or not. When creating an account, it’s disabled by default, until the e-mail address has been validated. |\n| `PCanRelay` | If account can be used to relay e-mails. |\n| `PJwt` | A token representing the login to the account. This token is seant as a [Bearer token](https://www.rfc-editor.org/rfc/rfc6750) in requests requiring authentication. |\n| `PExpires` | When the JWT token expires. The token needs to be renewed before this token expires, if the client wishes to maintain the connection. After the token expires, the client needs to login again. |"
 					},
 					"response": []
 				},
@@ -139,7 +139,7 @@
 								"GetSessionToken"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md)\n\nAllows the client to get session information about a newly created account, created using a web form, without having to provide user credentials again."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/GetSessionToken.md)\n\nAllows the client to get session information about a newly created account, created using a web form, without having to provide user credentials again.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSeconds` | Requested number of seconds before the JWT token that will be issued expires. |\n| `PCreated` | When account was created (server timestamp). |\n| `PEnabled` | If account is enabled or not. When creating an account, it’s disabled by default, until the e-mail address has been validated. |\n| `PCanRelay` | If account can be used to relay e-mails. |\n| `PJwt` | A token representing the login to the account. This token is seant as a [Bearer token](https://www.rfc-editor.org/rfc/rfc6750) in requests requiring authentication. |\n| `PExpires` | When the JWT token expires. The token needs to be renewed before this token expires, if the client wishes to maintain the connection. After the token expires, the client needs to login again. |"
 					},
 					"response": []
 				},
@@ -169,7 +169,7 @@
 								"VerifyEMail"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md)\n\nVerifies an e-mail address corresponding to an account that is being created. When creating an account using [/Account/Create](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md), the account is at first _disabled_. This means, it cannot be used actively in the API. To enabled an account, you need to verify the e-mail address provided when creating the account. The account creation call will send an e-mail with a code. This code needs to be provided in a call to this resource, together with the e-mail address."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/VerifyEMail.md)\n\nVerifies an e-mail address corresponding to an account that is being created. When creating an account using [/Account/Create](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Create.md), the account is at first _disabled_. This means, it cannot be used actively in the API. To enabled an account, you need to verify the e-mail address provided when creating the account. The account creation call will send an e-mail with a code. This code needs to be provided in a call to this resource, together with the e-mail address.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PEMail` | e-Mail address of the user. |\n| `PCode` | Code sent to the user to verify the e-mail address. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PEMail` | e-Mail address of the user. |\n| `PUserName` | User Name of account. |"
 					},
 					"response": []
 				},
@@ -247,7 +247,7 @@
 								"Login"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md)\n\nAllows the client to authenticate itself with the API. This method is an alternative to the [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resource that allows the client to login using traditional HTTP means.\n\nIf authentication succeeds, a _JSON Web Token_ (or _JWT_) is returned to the client. This token can be used as a [Bearer token](https://www.rfc-editor.org/rfc/rfc6750) in subsequent calls to the API. It needs to be [refreshed](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md) before it expires."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md)\n\nAllows the client to authenticate itself with the API. This method is an alternative to the [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resource that allows the client to login using traditional HTTP means.\n\nIf authentication succeeds, a _JSON Web Token_ (or _JWT_) is returned to the client. This token can be used as a [Bearer token](https://www.rfc-editor.org/rfc/rfc6750) in subsequent calls to the API. It needs to be [refreshed](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md) before it expires.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PUserName` | User Name of the account to authenticate. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. |\n| `PSignature` | Cryptographic signature of request. |\n| `PSeconds` | Requested number of seconds before the JWT token that will be issued expires. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PJwt` | A token representing the login to the account. This token is seant as a _Bearer_ token in requests requiring authentication. |\n| `PExpires` | When the JWT token expires. The token needs to be renewed before this token expires, if the client wishes to maintain the connection. After the token expires, the client needs to login again. |"
 					},
 					"response": []
 				},
@@ -289,7 +289,7 @@
 								"Refresh"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md)\n\nAllows the client to refresh a session token, maintaining the current login, regardless of method used in the original login.\n\nIf authentication succeeds, a new _JSON Web Token_ (or _JWT_) is returned to the client. This replaces the token provided in the first login request or subsequent refresh requests. The token also needs to be refreshed before it expires.\n\nIf failing to refresh a token, or if the token expires, a new login must be performed. This can be done using either of the [Login](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md) or [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resources"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Refresh.md)\n\nAllows the client to refresh a session token, maintaining the current login, regardless of method used in the original login.\n\nIf authentication succeeds, a new _JSON Web Token_ (or _JWT_) is returned to the client. This replaces the token provided in the first login request or subsequent refresh requests. The token also needs to be refreshed before it expires.\n\nIf failing to refresh a token, or if the token expires, a new login must be performed. This can be done using either of the [Login](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/Login.md) or [WwwLogin](https://lab.tagroot.io/Documentation/Neuron/Agent/Account/WwwLogin.md) resources\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSeconds` | Requested number of seconds before the JWT token that will be issued expires. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PJwt` | A token representing the login to the account. This token is seant as a _Bearer_ token in requests requiring authentication. |\n| `PExpires` | When the JWT token expires. The token needs to be renewed before this token expires, if the client wishes to maintain the connection. After the token expires, the client needs to login again. |"
 					},
 					"response": []
 				},
@@ -384,7 +384,7 @@
 								"SendTextMessage"
 							]
 						},
-						"description": "Allows the client to send a plain text _chat_ message from its account to an XMPP recipient.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The plain text message to send. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+						"description": "Allows the client to send a plain text _chat_ message from its account to an XMPP recipient.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The plain text message to send. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `Pid` | ID of stanza sent. Can be used to update message. If no ID was provided in the call, a message ID will be generated. |"
 					},
 					"response": []
 				},
@@ -414,7 +414,7 @@
 								"SendFormattedMessage"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md)\n\nAllows the client to send a formatted _chat_ message from its account to an XMPP recipient. A formatted message contains the message in plain text, Markdown and HTML. The recipient, depending on capabilities, will select the representation it handles best to present the message.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The [Markdown](https://lab.tagroot.io/Markdown.md) body of the message to send. This Markdown is converted to plain text, HTML and also sent as Markdown to the recipient, who can choose which representation to present. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendFormattedMessage.md)\n\nAllows the client to send a formatted _chat_ message from its account to an XMPP recipient. A formatted message contains the message in plain text, Markdown and HTML. The recipient, depending on capabilities, will select the representation it handles best to present the message.\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PMessage` | The [Markdown](https://lab.tagroot.io/Markdown.md) body of the message to send. This Markdown is converted to plain text, HTML and also sent as Markdown to the recipient, who can choose which representation to present. |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `PId` | ID of stanza sent. Can be used to update message. If no ID was provided in the call, a message ID will be generated. |"
 					},
 					"response": []
 				},
@@ -444,7 +444,7 @@
 								"SendXmlMessage"
 							]
 						},
-						"description": "Allows the client to send a custom XML _normal_ message from its account to an XMPP recipient.  \n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n| `PXml` | The XML message to send. It can be sent as text or directly in XML (if sent embedded in XML). |"
+						"description": "Allows the client to send a custom XML _normal_ message from its account to an XMPP recipient.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PSubject` | Optional subject of message. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n| `PXml` | The XML message to send. It can be sent as text or directly in XML (if sent embedded in XML). |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `Pid` | ID of stanza sent. Can be used to update message. If no ID was provided in the call, a message ID will be generated. |"
 					},
 					"response": []
 				},
@@ -474,7 +474,7 @@
 								"SendPresenceSubscription"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md)\n\nAllows the client to send a presence subscription from its account to an XMPP recipient. If the account to which the client is logged in has an approved Legal ID associated with it, this ID will be included in the request, to allow the recipient to know who has made the request.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PCustomXml` | Optional Custom XML that can be added to the presence subscription request. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceSubscription.md)\n\nAllows the client to send a presence subscription from its account to an XMPP recipient. If the account to which the client is logged in has an approved Legal ID associated with it, this ID will be included in the request, to allow the recipient to know who has made the request.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PCustomXml` | Optional Custom XML that can be added to the presence subscription request. |\n| `PLanguage` | Optional ISO 639-1 language code. |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `PId` | ID of stanza sent. Can be used to match responses. If no ID was provided in the call, a message ID will be generated. |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -504,7 +504,7 @@
 								"SendPresenceUnsubscription"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md)\n\nAllows the client to send a presence unsubscription from its account to an XMPP recipient.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendPresenceUnsubscription.md)\n\nAllows the client to send a presence unsubscription from its account to an XMPP recipient.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `PId` | ID of stanza sent. Can be used to match responses. If no ID was provided in the call, a message ID will be generated. |"
 					},
 					"response": []
 				},
@@ -525,7 +525,7 @@
 								"SendSubscriptionAccepted"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md)\n\nAllows the client to accept a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionAccepted.md)\n\nAllows the client to accept a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `PId` | ID of stanza sent. Can be used to match responses. If no ID was provided in the call, a message ID will be generated. |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -555,7 +555,7 @@
 								"SendSubscriptionDeclined"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md)\n\nAllows the client to decline a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SendSubscriptionDeclined.md)\n\nAllows the client to decline a presence subscription made to its account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | A Bare or Full JID (XMPP network address). |\n| `PId` | Optional Message ID. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSent` | If the XMPP stanza was sent or not. |\n| `PId` | ID of stanza sent. Can be used to match responses. If no ID was provided in the call, a message ID will be generated. |"
 					},
 					"response": []
 				},
@@ -585,7 +585,7 @@
 								"GetRoster"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md)\n\nGets the account’s roster\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the roster where response begins. |\n| `PMaxCount` | Maximum number of roster items to return. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRoster.md)\n\nGets the account’s roster\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the roster where response begins. |\n| `PMaxCount` | Maximum number of roster items to return. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -615,7 +615,7 @@
 								"GetRosterItem"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md)\n\nGets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/GetRosterItem.md)\n\nGets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -645,7 +645,7 @@
 								"SetRosterItem"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md)\n\nSets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PName` | Name to assign to the roster item. |\n| `PGroups` | Groups to assign to the roster item. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/SetRosterItem.md)\n\nSets information about a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PName` | Name to assign to the roster item. |\n| `PGroups` | Groups to assign to the roster item. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -675,7 +675,7 @@
 								"RemoveRosterItem"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md)\n\nRemoves a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/RemoveRosterItem.md)\n\nRemoves a specific roster item for the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PBareJid` | Bare JID of roster item. |\n| `PPendingSubscription` | If the account has a pending subscription request to the remote entity. |\n| `PStatus` | Status of roster item. |\n| `PName` | Name given to the roster item. |\n| `PGroups` | Names of groups to which the roster item is assigned. |"
 					},
 					"response": []
 				},
@@ -705,7 +705,7 @@
 								"PresenceProbe"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md)\n\nGets the latest presence issued by a contact in your roster who has approved your presence subscription request.\n\n**Note**: The result to the presence probe request will give you the latest _Full JID_ published by the contact. This _Full JID_ can be used to make directed _information queries_ to the contact.\n\n**Security Note**: You are only allowed to send a presence probe to contacts that have approved a presence subscription from you.  \n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md)\n\nGets the latest presence issued by a contact in your roster who has approved your presence subscription request.\n\n**Note**: The result to the presence probe request will give you the latest _Full JID_ published by the contact. This _Full JID_ can be used to make directed _information queries_ to the contact.\n\n**Security Note**: You are only allowed to send a presence probe to contacts that have approved a presence subscription from you.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PJid` | JID of latest presence from contact. |\n| `PType` | Type of presence sent. Can be the empty string (meaning _available_) or `unavailable`. |\n| `PReceived` | When presence was received by the server of the contact. |\n| `PStanza` | Actual presence stanza, containing information sent by the contact. Contents may vary depending on type of contact. |"
 					},
 					"response": []
 				},
@@ -735,7 +735,7 @@
 								"InformationQuery"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md)\n\nSends an Information Query (`iq`) to an entity on the XMPP network, given its _Full JID_. For connected entities, you need to have an presence subscription to that entity, approved by the entity, to get the _Full JID_. You get the _Full JID_ using the [Presence Probe](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md) resource.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |\n| `PType` | Type of Information Query. Must be `get` or `set`. |\n| `PQuery` | Valid XML (or string-representation of valid XML) of the query to send. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/InformationQuery.md)\n\nSends an Information Query (`iq`) to an entity on the XMPP network, given its _Full JID_. For connected entities, you need to have an presence subscription to that entity, approved by the entity, to get the _Full JID_. You get the _Full JID_ using the [Presence Probe](https://lab.tagroot.io/Documentation/Neuron/Agent/Xmpp/PresenceProbe.md) resource.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTo` | Bare JID of contact to whom the presence probe is directed. |\n| `PType` | Type of Information Query. Must be `get` or `set`. |\n| `PQuery` | Valid XML (or string-representation of valid XML) of the query to send. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POk` | If query executed without error. |\n| `PErrorCode` | Optional error code, in case an error was returned. |\n| `PErrorText` | Optional error text, in case an error was returned. |\n| `PErrorType` | Optional error type, in case an error was returned. |\n| `PContent` | Any XML content returned in the query result. |"
 					},
 					"response": []
 				},
@@ -765,7 +765,7 @@
 								"PopMessages"
 							]
 						},
-						"description": "[https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md)\n\nGets messages for the account from the server"
+						"description": "[https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/Xmpp/PopMessages.md)\n\nGets messages for the account from the server\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PMaxCount` | Maximum number of messages to return. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PId` | Optional ID associated with message. |\n| `PFrom` | JID of entity sending the message. |\n| `PTo` | JID of recipient. |\n| `PLanguage` | Optional language code associated with message. |\n| `PType` | Type of message. |\n| `PPTimestamp` | Date and time when message was received by server. |\n| `PContent` | Content of message. |"
 					},
 					"response": []
 				}
@@ -800,7 +800,7 @@
 								"SavePrivateXml"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md)\n\nAllows the client to save private information on the server using XML"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/SavePrivateXml.md)\n\nAllows the client to save private information on the server using XML\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PXml` | XML of information to store on the server, for the account. |\n\n**Note**: Only one record per namespace and local name (i.e. _fully qualified name_) is permitted, for each account. Saving private XML overwrites any previous contents for that _fully qualified name_.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCreated` | When the information record was first created. |\n| `PUpdated` | When the information record was last updated. |"
 					},
 					"response": []
 				},
@@ -830,7 +830,7 @@
 								"LoadPrivateXml"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md)\n\nAllows the client to load previously saved private XML information from the server"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Storage/LoadPrivateXml.md)\n\nAllows the client to load previously saved private XML information from the server.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLocalName` | Local Name of XML to load. |\n| `PNamespace` | Namespace of XML to load. |\n\n**Note**: Only one record per namespace and local name (i.e. _fully qualified name_) is permitted, for each account. Saving private XML overwrites any previous contents for that _fully qualified name_.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCreated` | When the information record was first created. |\n| `PUpdated` | When the information record was last updated. |\n| `PXml` | XML of information stored on the server, for the account. |"
 					},
 					"response": []
 				}
@@ -864,7 +864,8 @@
 								"Crypto",
 								"GetAlgorithms"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/GetAlgorithms.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/GetAlgorithms.md)\n\nAllows the client to retrieve a list of available cryptographic algorithms on the server. These algorithms can be used to create keys. These keys are necessary in order to apply for legal identities, which are then used to sign smart contracts.  \n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLocalName` | Local Name of the algorithm. |\n| `PNamespace` | Namespace, defining the algorithm. |\n| `PSecurityStrength` | Security strength of algorithm (in bits). |\n| `PSafe` | If the algorithm is considered safe according to [https://safecurves.cr.yp.to/](https://safecurves.cr.yp.to/). |\n| `PSlow` | If the algorithm is slow (i.e. computation intensive). |\n| `PScore` | Algorithm score. Can be used, together with `PSecurityStrength` to order algorithms. |"
 					},
 					"response": []
 				},
@@ -944,7 +945,8 @@
 								"Crypto",
 								"CreateKey"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/CreateKey.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/CreateKey.md)\n\nAllows the client to create a cryptographic key on the server, and protect it with a password. The key will be stored encrypted on the server, protected with the key password. The creation of a key will require the user to provide the account password again.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLocalName` | Local Name of the algorithm to use for the new key. |\n| `PNamespace` | Namespace, defining the algorithm. |\n| `PId` | ID of the key. The ID must be unique, for the current account. Different accounts can have keys with the same ID. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. (Password is not stored with the key, instead this signature will be the base for the cryptographic key used to encrypt the key on the server. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCreated` | When the information record was first created. |\n| `PUpdated` | When the information record was last updated. |"
 					},
 					"response": []
 				},
@@ -980,7 +982,8 @@
 									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/GetPublicKey.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Crypto/GetPublicKey.md)\n\nAllows the client to get the current server public key, or the public key of one of its own cryptographic keys. The client can use this key to validate signatures server in relation to legal identities, smart contracts, tokens, etc.\n\n**Note**: If a Key ID is provided, information about one of the keys of the client account is returned. If not Key ID is provided, information about the the public server key is returned.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Optional Key ID. If not provided, the server public key is returned. If provided, the public key of the corresponding cryptographic key of the client is returned. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKey` | Base64-encoded public key of the server. |\n| `PLocalName` | Local Name of the algorithm. |\n| `PNamespace` | Namespace, defining the algorithm. |\n| `PSecurityStrength` | Security strength of algorithm (in bits). |\n| `PSafe` | If the algorithm is considered safe according to [https://safecurves.cr.yp.to/](https://safecurves.cr.yp.to/). |\n| `PSlow` | If the algorithm is slow (i.e. computation intensive). |\n| `PScore` | Algorithm score. Can be used, together with `PSecurityStrength` to order algorithms. |"
 					},
 					"response": []
 				}
@@ -1015,7 +1018,7 @@
 								"ValidatePnr"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md)\n\nAllows the client to validate a personal number before using it to apply for a Legal Identity"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ValidatePNr.md)\n\nAllows the client to validate a personal number before using it to apply for a Legal Identity\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCountryCode` | ISO 3166-1 country code. |\n| `PPNr` | Personal number entry to validate. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCountrySupported` | If country is supported and recognized by the personal number validator on the broker. |\n| `PIsValid` | If the entry was found to be valid. |\n| `PNormalized` | The normal form of the personal number entry. |"
 					},
 					"response": []
 				},
@@ -1045,7 +1048,7 @@
 								"GetApplicationAttributes"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md)\n\nAllows the client to get important attributes necessary to perform a correct ID Application"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetApplicationAttributes.md)\n\nAllows the client to get important attributes necessary to perform a correct ID Application\n\n## Input Parameters\n\nNo input parameters in this call.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PPeerReview` | If peer-review of ID applications is permitted on the broker. |\n| `PNrReviewers` | Number of successfuls peer reivews required for a process to conclude successfully. |\n| `PNrPhotos` | Number of photos required in an application, for a peer-review process. |\n| `PIso3166` | If ISO 3166 country codes are required to be used. |\n| `PRequired` | Required [ID Properties](https://gitlab.com/IEEE-SA/XMPPI/IoT/-/blob/master/LegalIdentities.md#applying-for-legal-identity-registration) in an ID application. |"
 					},
 					"response": []
 				},
@@ -1147,7 +1150,7 @@
 								"ApplyId"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md)\n\nAllows the client to apply for a new Legal Identity on the server. The application must be signed using one of the keys created by the client\n\nRequest:\n\n``` json\n{\n    \"keyId\": Required(Str(PKeyId)),\n    \"nonce\": Required(Str(PNonce)),\n    \"keySignature\": Required(Str(PKeySignature)),\n    \"requestSignature\": Required(Str(PRequestSignature)),\n    \"Properties\":\n    {\n        \"name\": Required(Str(PPropertyName)),\n        \"value\": Required(Str(PPropertyValue))\n    }?[]\n}\n\n ```"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ApplyId.md)\n\nAllows the client to apply for a new Legal Identity on the server. The application must be signed using one of the keys created by the client.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the Identity application. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n| `PPropertyName` | Names of properties that will be engraved into the Legal Identity. |\n| `PPropertyValue` | Values of properties that will be engraved into the Legal Identity. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PIdentity` | Identity object generated by the server. |\n\nRequest:\n\n``` json\n{\n    \"keyId\": Required(Str(PKeyId)),\n    \"nonce\": Required(Str(PNonce)),\n    \"keySignature\": Required(Str(PKeySignature)),\n    \"requestSignature\": Required(Str(PRequestSignature)),\n    \"Properties\":\n    {\n        \"name\": Required(Str(PPropertyName)),\n        \"value\": Required(Str(PPropertyValue))\n    }?[]\n}\n\n ```\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the Identity application. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n| `PPropertyName` | Names of properties that will be engraved into the Legal Identity. |\n| `PPropertyValue` | Values of properties that will be engraved into the Legal Identity. |"
 					},
 					"response": []
 				},
@@ -1224,7 +1227,7 @@
 								"AddIdAttachment"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md)\n\nAllows the client to add an attachment to a Legal Identity application.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the Identity application. |\n| `PLegalId` | Identity of the Legal Identity Application. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n| `PAttachmentBase64` | Base-64-encoding of attachment to add to the Identity application. |\n| `PAttachmentFileName` | File name of attachment. |\n| `PAttachmentContentType` | Content-Type of attachment |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AddIdAttachment.md)\n\nAllows the client to add an attachment to a Legal Identity application.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the Identity application. |\n| `PLegalId` | Identity of the Legal Identity Application. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n| `PAttachmentBase64` | Base-64-encoding of attachment to add to the Identity application. |\n| `PAttachmentFileName` | File name of attachment. |\n| `PAttachmentContentType` | Content-Type of attachment |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PIdentity` | Updated Identity object generated by the server. |"
 					},
 					"response": []
 				},
@@ -1254,7 +1257,7 @@
 								"ReadyForApproval"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md)\n\nWhen an ID application is ready (all attachments have been signed and uploaded), the client can call this resource to flag the application as ready for approval. This will execute any automated onboarding procedures to analyze the application, and, if passing them, will take the identity to the approved state. They can also take the application to the rejected state, in case they find the information invalid."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/ReadyForApproval.md)\n\nWhen an ID application is ready (all attachments have been signed and uploaded), the client can call this resource to flag the application as ready for approval. This will execute any automated onboarding procedures to analyze the application, and, if passing them, will take the identity to the approved state. They can also take the application to the rejected state, in case they find the information invalid.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLegalId` | Identity of the Legal Identity to flag as ready for approval. |"
 					},
 					"response": []
 				},
@@ -1284,7 +1287,7 @@
 								"GetServiceProvidersForIdReview"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md)\n\nAllows the client to retrieve a list of available service providers that can be used to review a recent ID application"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetServiceProvidersForIdReview.md)\n\nAllows the client to retrieve a list of available service providers that can be used to review a recent ID application\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PId` | ID of service provider. |\n| `PType` | Type (class name) of service provider. |\n| `PName` | Displayable name for service provider. |\n| `PReviewerId` | Identifier of Legal ID of reviewer. Use this identifier when requesting a peer review from the service provider. |\n| `PExternal` | If the service provider is an external party (`true`), or hosted on the Neuron® (`false`). |\n| `PIconUrl` | Optional reference to icon that can be displayed together with the name. |\n| `PIconWidth` | Width of optional icon. |\n| `PIconHeight` | Height of optional icon. |"
 					},
 					"response": []
 				},
@@ -1344,7 +1347,7 @@
 								"AuthorizeAccessToId"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Legal Identities to a remote party. When (if) the remote party requests the ID, the broker will return it automatically, if already authorized. If not authorized, a petition to access the identity will be sent to the client for manual approval (or rejection)."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToId.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Legal Identities to a remote party. When (if) the remote party requests the ID, the broker will return it automatically, if already authorized. If not authorized, a petition to access the identity will be sent to the client for manual approval (or rejection).\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLegalId` | Identifier of the corresponding Legal Identity of the client. |\n| `PRemoteId` | Identifier of the Legal Identity of the corresponding remote entity. |\n| `PAuthorized` | If the remote entity is authorized access to the corresponding identity or not. |"
 					},
 					"response": []
 				},
@@ -1581,7 +1584,7 @@
 								"CreateContract"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md)\n\nAllows the client to create a new smart contract, based on an existing (and approved) contract template. The request must be signed using one of the keys created by the client.\n\nRequest\n\n``` json\n{\n    \"templateId\": Required(Str(PTemplateId)),\n    \"visibility\": Required(Str(PVisibility)),\n    \"Parts\":\n    {\n        \"role\": Required(Str(PRole)),\n        \"legalId\": Required(Str(PLegalId))\n    }?[],\n    \"Parameters\":\n    {\n        \"name\": Required(Str(PParameterName)),\n        \"value\": Required(Str(PParameterValue))\n    }?[]\n}\n\n ```"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/CreateContract.md)\n\nAllows the client to create a new smart contract, based on an existing (and approved) contract template. The request must be signed using one of the keys created by the client.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTemplateId` | Contract ID of approved template to use to create the new smart contract. |\n| `PVisibility` | Visibility of the new smart contract. Possible values are `CreatorAndParts`, `DomainAndParts`, `Public` and `PublicSearchable`. |\n| `PRole` | Role of a predefined part to the contract. |\n| `PLegalId` | Legal ID of a predefined part to the contract. |\n| `PLegalId` | Values of properties that will be engraved into the Legal Identity. |\n| `PPropertyName` | Names of properties that will be engraved into the Legal Identity. |\n| `PPropertyValue` | Values of properties that will be engraved into the Legal Identity. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Snart contract object generated by the server |\n\nRequest\n\n``` json\n{\n    \"templateId\": Required(Str(PTemplateId)),\n    \"visibility\": Required(Str(PVisibility)),\n    \"Parts\":\n    {\n        \"role\": Required(Str(PRole)),\n        \"legalId\": Required(Str(PLegalId))\n    }?[],\n    \"Parameters\":\n    {\n        \"name\": Required(Str(PParameterName)),\n        \"value\": Required(Str(PParameterValue))\n    }?[]\n}\n\n ```"
 					},
 					"response": []
 				},
@@ -1611,7 +1614,7 @@
 								"GetIdentity"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md)\n\nAllows the client to get an Identity. If the Identity belongs to someone else, and the client is not authorized access to the Identity, an error will be returned.\n\n**Note**: Neurons are federated. You can get identities created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentity.md)\n\nAllows the client to get an Identity. If the Identity belongs to someone else, and the client is not authorized access to the Identity, an error will be returned.\n\n**Note**: Neurons are federated. You can get identities created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PLegalId` | Identity of the Legal Identity to get. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PIdentity` | Identity object. |"
 					},
 					"response": []
 				},
@@ -1652,7 +1655,7 @@
 								"GetContract"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md)\n\nAllows the client to get a Smart Contract. If the Contract belongs to someone else, and the client is not authorized access to the Contract, an error will be returned.\n\n**Note**: Neurons are federated. You can get contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md)\n\nAllows the client to get a Smart Contract. If the Contract belongs to someone else, and the client is not authorized access to the Contract, an error will be returned.\n\n**Note**: Neurons are federated. You can get contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContractId` | Identity of the Smart Contract to get. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Smart Contract object. |"
 					},
 					"response": []
 				},
@@ -1728,7 +1731,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"keyId\": \"{{keyId}}\",\r\n    \"legalId\": \"{{legalId}}\",\r\n    \"contractId\": \"{{contractId}}\",\r\n    \"role\": \"Creator\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"keySignature\": \"{{keySignature}}\",\r\n    \"requestSignature\": \"{{signature}}\"\r\n}",
+							"raw": "{\r\n    \"keyId\": \"{{keyId}}\",\r\n    \"legalId\": \"{{legalId}}\",\r\n    \"contractId\": \"{{contractId}}\",\r\n    \"role\": \"Owner\",\r\n    \"nonce\": \"{{nonce}}\",\r\n    \"keySignature\": \"{{keySignature}}\",\r\n    \"requestSignature\": \"{{signature}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1747,7 +1750,7 @@
 								"SignContract"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md)\n\nAllows the client to sign a smart contract.\n\n**Note**: Neurons are federated. You can sign contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignContract.md)\n\nAllows the client to sign a smart contract.\n\n**Note**: Neurons are federated. You can sign contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the contract. It must correspond to the key used when signing the Legal Identity application that will be used to sign the contract. |\n| `PContractId` | ID of smart contract to sign. |\n| `PLegalId` | Identity of the Legal Identity that will be used to sign the smart contract. |\n| `Role` | For what role the signature will be made. |\n| `PNonce` | A unique random string, at least 32 characters long, with sufficient entropy to not be reused again. If reused, an error will be returned. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Updated Smart Contract object with the signature. |"
 					},
 					"response": []
 				},
@@ -1812,7 +1815,7 @@
 								"SignData"
 							]
 						},
-						"description": "Allows the client to sign binary data."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignData.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/SignData.md)\n\nAllows the client to sign binary data.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PKeyId` | Identity of key to use for signing the contract. It must correspond to the key used when signing the Legal Identity application that will be used to sign the contract. |\n| `PLegalId` | Identity of the Legal Identity that will be used to sign the smart contract. |\n| `PDataBase64` | Binary data, base64-encoded, that will be signed. |\n| `PKeySignature` | Cryptographic signature of the key ID, using the key password. |\n| `PRequestSignature` | Cryptographic signature of the requesut, using the account password. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PSignature` | Base64-encoded signature. |"
 					},
 					"response": []
 				},
@@ -1842,7 +1845,7 @@
 								"GetIdentities"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md)\n\nGets the account’s legal identities"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetIdentities.md)\n\nGets the account’s legal identities\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the list where response begins. |\n| `PMaxCount` | Maximum number of identities to return. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PIdentity` | Identity objects found. |"
 					},
 					"response": []
 				},
@@ -1883,12 +1886,12 @@
 								"GetCreatedContracts"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md)\n\nGets smart contracts the account has created."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetCreatedContracts.md)\n\nGets smart contracts the account has created.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the list where response begins. |\n| `PMaxCount` | Maximum number of contracts to return. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Contract objects found. |"
 					},
 					"response": []
 				},
 				{
-					"name": "Authorize Access To ID",
+					"name": "Authorize Access To Contract",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1902,7 +1905,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{host}}/Agent/Legal/AuthorizeAccessToId",
+							"raw": "https://{{host}}/Agent/Legal/AuthorizeAccessToContract",
 							"protocol": "https",
 							"host": [
 								"{{host}}"
@@ -1910,10 +1913,10 @@
 							"path": [
 								"Agent",
 								"Legal",
-								"AuthorizeAccessToId"
+								"AuthorizeAccessToContract"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Smart Contracts (or one of the Smart Contracts for which the client is part) to a remote party. When (if) the remote party requests access to the the Smart Contract, the broker will return it automatically, if already authorized. If not authorized, a petition to access the Smart Contract will be sent to the clients of the part of the contract for manual approval"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/AuthorizeAccessToContract.md)\n\nAllows the client to (pre-)authorize access to (or remove authorization to access) one of its Smart Contracts (or one of the Smart Contracts for which the client is part) to a remote party. When (if) the remote party requests access to the the Smart Contract, the broker will return it automatically, if already authorized. If not authorized, a petition to access the Smart Contract will be sent to the clients of the part of the contract for manual approval\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContractIdId` | Identifier of the corresponding Smart Contract of the client, or for which the client is part. |\n| `PRemoteId` | Identifier of the Legal Identity of the corresponding remote entity. |\n| `PAuthorized` | If the remote entity is authorized access to the corresponding contract or not. |"
 					},
 					"response": []
 				}
@@ -1958,7 +1961,8 @@
 								"Wallet",
 								"GetBalance"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetBalance.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetBalance.md)\n\nAllows the client to retrieve information about the current state of its wallet.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PAmount` | Current amount of eDaler that can be used. |\n| `PReserved` | Current amount of eDaler that has been reserved. |\n| `PCurrency` | Currency of wallet. |\n| `PTimestamp` | Timestamp of balance statement. |"
 					},
 					"response": []
 				},
@@ -1987,7 +1991,8 @@
 								"Wallet",
 								"ProcessEDalerUri"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/ProcessEDalerUri.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/ProcessEDalerUri.md)\n\nAllows the client to process an eDaler URI.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PUri` | eDaler URI to process. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PAmount` | Current amount of eDaler that can be used. |\n| `PReserved` | Current amount of eDaler that has been reserved. |\n| `PCurrency` | Currency of wallet. |\n| `PTimestamp` | Timestamp of balance statement. |"
 					},
 					"response": []
 				},
@@ -2016,7 +2021,8 @@
 								"Wallet",
 								"GetServiceProvidersForBuyingEDaler"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForBuyingEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForBuyingEDaler.md)\n\nAllows the client to retrieve a list of available service providers that can be used to buy eDaler.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PId` | ID of service provider. |\n| `PType` | Type (class name) of service provider. |\n| `PName` | Displayable name for service provider. |\n| `PIconUrl` | Optional reference to icon that can be displayed together with the name. |\n| `PIconWidth` | Width of optional icon. |\n| `PIconHeight` | Height of optional icon. |\n| `PTemplateId` | Reference to optional smart contract. If provided, a smart contract needs to be created based on this template, and then signed by the client, to buy eDaler using the service provider. The contract contains necessary parameters and information for the service provider to be able to process the request. If a contract template is not provided, it can be assued the service provider will collect the information via a web page, that the client must open and complete. |"
 					},
 					"response": []
 				},
@@ -2045,7 +2051,8 @@
 								"Wallet",
 								"GetServiceProvidersForSellingEDaler"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForSellingEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForSellingEDaler.md)\n\nAllows the client to retrieve a list of available service providers that can be used to sell eDaler.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PId` | ID of service provider. |\n| `PType` | Type (class name) of service provider. |\n| `PName` | Displayable name for service provider. |\n| `PIconUrl` | Optional reference to icon that can be displayed together with the name. |\n| `PIconWidth` | Width of optional icon. |\n| `PIconHeight` | Height of optional icon. |\n| `PTemplateId` | Reference to optional smart contract. If provided, a smart contract needs to be created based on this template, and then signed by the client, to sell eDaler using the service provider. The contract contains necessary parameters and information for the service provider to be able to process the request. If a contract template is not provided, it can be assued the service provider will collect the information via a web page, that the client must open and complete. |"
 					},
 					"response": []
 				},
@@ -2075,7 +2082,7 @@
 								"InitiateBuyEDaler"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md)\n\nAllows the client to initiate the process of buying eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.  \n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to buy. |\n| `PCurrency` | Currency of eDaler to buy. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateBuyEDaler.md)\n\nAllows the client to initiate the process of buying eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to buy. |\n| `PCurrency` | Currency of eDaler to buy. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `Id` | ID of transaction. |\n| `State` | State of transaction. Possible values are `Created`, `Preparing`, `Prepared`, `Executing`, `Executed`, `Committing`, `Committed`, `RollingBack`, `RolledBack` and `Error`. |\n| `Started` | When transaction started. |\n| `Ended` | When (if) transaction ended. |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to buy. |\n| `PCurrency` | Currency of eDaler to buy. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PClientUrl` | URL to third-party web page that the client needs to open and complete, for the transaction to take place. |"
 					},
 					"response": []
 				},
@@ -2105,7 +2112,7 @@
 								"InitiateSellEDaler"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md)\n\nAllows the client to initiate the process of selling eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.  \nStartFragment\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to sell. |\n| `PCurrency` | Currency of eDaler to sell. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\nEndFragment"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/InitiateSellEDaler.md)\n\nAllows the client to initiate the process of selling eDaler, using a service provider that does not use a smart contract as the basis for the transaction (i.e. a service provider that will require the client to open a third-party page to complete the transaction).\n\n**Note**: Service Providers publishing a smart contract template as the basis of operation start processing transactions when the contract has been created and signed by the client and the _Trust Provider_. There is no need to initiate the process by calling this resource in such cases.  \n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to sell. |\n| `PCurrency` | Currency of eDaler to sell. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `Id` | ID of transaction. |\n| `State` | State of transaction. Possible values are `Created`, `Preparing`, `Prepared`, `Executing`, `Executed`, `Committing`, `Committed`, `RollingBack`, `RolledBack` and `Error`. |\n| `Started` | When transaction started. |\n| `Ended` | When (if) transaction ended. |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to sell. |\n| `PCurrency` | Currency of eDaler to sell. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PClientUrl` | URL to third-party web page that the client needs to open and complete, for the transaction to take place. |"
 					},
 					"response": []
 				},
@@ -2135,7 +2142,7 @@
 								"GetTransactionInformation"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md)\n\nAllows the client to get updated transaction information from the server. It also allows the client to re-register the current Tab ID (from `Events.js`) and function to call, in case changes are registered with the server-side transaction object. Call this function to restart event notification if you navigate between pages.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTransactionId` | ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetTransactionInformation.md)\n\nAllows the client to get updated transaction information from the server. It also allows the client to re-register the current Tab ID (from `Events.js`) and function to call, in case changes are registered with the server-side transaction object. Call this function to restart event notification if you navigate between pages.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTransactionId` | ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `Id` | ID of transaction. |\n| `State` | State of transaction. Possible values are `Created`, `Preparing`, `Prepared`, `Executing`, `Executed`, `Committing`, `Committed`, `RollingBack`, `RolledBack` and `Error`. |\n| `Started` | When transaction started. |\n| `Ended` | When (if) transaction ended. |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PAmount` | Amount of eDaler to buy. |\n| `PCurrency` | Currency of eDaler to buy. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PClientUrl` | URL to third-party web page that the client needs to open and complete, for the transaction to take place. |"
 					},
 					"response": []
 				}
@@ -2145,42 +2152,24 @@
 			"name": "Tokens",
 			"item": [
 				{
-					"name": "Get Contract Tokens",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contractId\": \"{{contractId}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://{{host}}/Agent/Tokens/GetContractTokens",
-							"protocol": "https",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"Agent",
-								"Tokens",
-								"GetContractTokens"
-							]
+					"name": "Get Tokens",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
 						}
 					},
-					"response": []
-				},
-				{
-					"name": "Get Tokens",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \r\n}",
+							"raw": "{\r\n    \"offset\": 0,\r\n    \"maxCount\": 1,\r\n    \"references\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2198,7 +2187,59 @@
 								"Tokens",
 								"GetTokens"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetTokens.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetTokens.md)\n\nGets a list of tokens on the Neuron® owned by the account.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `POffset` | Offset into the list where response begins. |\n| `PMaxCount` | Maximum number of contracts to return. |\n| `PReferences` | If token references is sufficient (true, default), or if entire tokens are to be returned (false). |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokens` | Tokens found. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contract Tokens",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contractId\": \"{{contractId}}\",\r\n    \"offset\": 0,\r\n    \"maxCount\": 1,\r\n    \"references\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetContractTokens",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetContractTokens"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetContractTokens.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetContractTokens.md)\n\nGets a list of tokens on the Neuron® created by a specific contract.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContractId` | ID of contract for which tokens are to be retrieved. |\n| `POffset` | Offset into the list where response begins. |\n| `PMaxCount` | Maximum number of contracts to return. |\n| `PReferences` | If token references is sufficient (true, default), or if entire tokens are to be returned (false). |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokens` | Tokens found. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Creation Attributes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetCreationAttributes",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetCreationAttributes"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetCreationAttributes.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetCreationAttributes.md)\n\nGets essential attributes needed for getting the _Trust Provider_ to accept token creation contracts.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCurrency` | Default currency used by the broker. |\n| `PCommission` | Minimum acceptable commission (in percent) for the _Trust Provider_ to accept and sign the token creation contract. |\n| `PTrustProvider` | ID of Legal Identity that is to sign the constract as _Trust Provider_. For the _Neuron_® to act as _Trust Provider_ in the token creation, this ID needs to correspond to the current Legal Identity of the _Neuron_®. |"
 					},
 					"response": []
 				},
@@ -2238,7 +2279,38 @@
 								"Tokens",
 								"GetToken"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetToken.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetToken.md)\n\nGets information about a token.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID to token to get. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PToken` | Token, if authorized and found. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Description",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"reportFormat\": \"Markdown\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Tokens/GetDescription",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Tokens",
+								"GetDescription"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetDescription.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetDescription.md)\n\nCreates a report relating to a state machine associated with a token.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token. |\n| `PReportFormat` | Format of report to generate. Possible values include `Markdown`, `Html`, `Text`, `Xaml`, `XamarinXaml` and `SmartContract`. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PReport` | Generated report. |"
 					},
 					"response": []
 				},
@@ -2255,7 +2327,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"note\": \"Test\",\r\n    \"personal\": false\r\n}",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"note\": \"\",\r\n    \"personal\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2273,47 +2345,8 @@
 								"Tokens",
 								"AddTextNote"
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Token Events",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {
-							"accept": true
-						}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/xml",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
 						},
-						"url": {
-							"raw": "https://{{host}}/Agent/Tokens/GetTokenEvents",
-							"protocol": "https",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"Agent",
-								"Tokens",
-								"GetTokenEvents"
-							]
-						}
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/AddTextNote.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/AddTextNote.md)\n\nAdds a text note to a token\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token. |\n| `PNote` | Text note to add. |\n| `PPersonal` | If the note is personal or note. Personal notes are deleted when the token changes owner. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PNote` | Generated note added to the token. |"
 					},
 					"response": []
 				},
@@ -2353,38 +2386,30 @@
 								"Tokens",
 								"AddXmlNote"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/AddXmlNote.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/AddXmlNote.md)\n\nAdds an XML note to a token.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token. |\n| `PNote` | XML note to add. |\n| `PPersonal` | If the note is personal or note. Personal notes are deleted when the token changes owner. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PNote` | Generated note added to the token. |"
 					},
 					"response": []
 				},
 				{
-					"name": "Get Creation Attributes",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "https://{{host}}/Agent/Tokens/GetCreationAttributes",
-							"protocol": "https",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"Agent",
-								"Tokens",
-								"GetCreationAttributes"
-							]
+					"name": "Get Token Events",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
 						}
 					},
-					"response": []
-				},
-				{
-					"name": "Get Description",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\",\r\n    \"reportFormat\": \"Markdown\"\r\n}",
+							"raw": "{\r\n    \"tokenId\": \"{{tokenId}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2392,7 +2417,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{host}}/Agent/Tokens/GetDescription",
+							"raw": "https://{{host}}/Agent/Tokens/GetTokenEvents",
 							"protocol": "https",
 							"host": [
 								"{{host}}"
@@ -2400,9 +2425,10 @@
 							"path": [
 								"Agent",
 								"Tokens",
-								"GetDescription"
+								"GetTokenEvents"
 							]
-						}
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetTokenEvents.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Tokens/GetTokenEvents.md)\n\nGets a list of token events.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token. |\n| `POffset` | Offset into the list where response begins. |\n| `PMaxCount` | Maximum number of contracts to return. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PEvents` | Events found. |"
 					},
 					"response": []
 				}
@@ -2437,7 +2463,7 @@
 								"GetCurrentState"
 							]
 						},
-						"description": "Gets the current state of a state machine, associated with a token."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/StateMachines/GetCurrentState.md](https://lab.tagroot.io/Documentation/Neuron/Agent/StateMachines/GetCurrentState.md)\n\nGets the current state of a state machine, associated with a token.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token associated with state machine. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PCurrentState` | Current state of state machine, if found, and authorized. |"
 					},
 					"response": []
 				},
@@ -2467,7 +2493,7 @@
 								"CreateReport"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/StateMachines/CreateReport.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/StateMachines/CreateReport.md)\n\nCreates a report relating to a state machine associated with a token."
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/StateMachines/CreateReport.md](https://neuron.saunter.tech/Documentation/Neuron/Agent/StateMachines/CreateReport.md)\n\nCreates a report relating to a state machine associated with a token.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PTokenId` | ID of token associated with state machine. |\n| `PReportType` | Type of report to generate. Possible values include `Present`, `History`, `StateDiagram` and `Profiling`. |\n| `PReportFormat` | Format of report to generate. Possible values include `Markdown`, `Html`, `Text`, `Xaml`, `XamarinXaml` and `SmartContract`. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PReport` | Generated report. |"
 					},
 					"response": []
 				}
