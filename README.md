@@ -5,9 +5,12 @@ Postman can be downloaded here https://www.postman.com/. It can be used both in 
 Open Postman and press the import button at the top of the workspace area, drag and drop both the collection and environment files.
 
 ## Configure
-**Note:** Environment variables can also be quickly accessed via the quick look button at the top right, the icon is a document with an eye.
-
+### Get response as XML
+Since the requests are sent in JSON format, the responses will be in JSON as well. If you wish to see the response in XML format you can add a "Accept: application/xml" header in the headers tab of the request
+### Set environment
 On the environments page, set the Agent API environment as active by pressing the checkmark button when hovering over the environment. 
+
+**Note:** Environment variables can also be quickly accessed via the quick look button at the top right, the icon is a document with an eye.
 ### Host and API key
 The host variable needs to be set to the domain configured for the neuron.
 If you are going to create accounts via the Postman collection you need to set the "apiKey" and "secret" variables to the values given when generating an API key in the neuron.
@@ -97,6 +100,8 @@ Full documentation can also be found here https://lab.tagroot.io/Documentation/N
 |ProcessEDalerUri|:white_check_mark:|
 |GetServiceProvidersForBuyingEDaler|:white_check_mark:|
 |GetServiceProvidersForSellingEDaler|:white_check_mark:|
+|GetPaymentOptionsForBuyingEDaler|:white_check_mark:|
+|GetPaymentOptionsForSellingEDaler|:white_check_mark:|
 |InitiateBuyEDaler|:white_check_mark:|
 |InitiateSellEDaler|:white_check_mark:|
 |GetTransactionInformation|:white_check_mark:|

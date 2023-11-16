@@ -1655,7 +1655,7 @@
 								"GetContract"
 							]
 						},
-						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md)\n\nAllows the client to get a Smart Contract. If the Contract belongs to someone else, and the client is not authorized access to the Contract, an error will be returned.\n\n**Note**: Neurons are federated. You can get contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContractId` | Identity of the Smart Contract to get. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Smart Contract object. |"
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Legal/GetContract.md)\n\nAllows the client to get a Smart Contract. If the Contract belongs to someone else, and the client is not authorized access to the Contract, an error will be returned.\n\n**Note**: Neurons are federated. You can get contracts created on other neurons through this API on the neuron you have your account on. Federated means that the neurons interconnect to share authorized information, when requested, and permitted\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContractId` | Identity of the Smart Contract to get. |\n| `PFormat` | Optional format for human-readable texts. If not provided, the object model for the text is returned. If provided, can be any of `Markdown`, `Html`, `Text`, `Xaml`, `XamarinXaml` or `SmartContract`. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PContract` | Smart Contract object. |"
 					},
 					"response": []
 				},
@@ -2053,6 +2053,66 @@
 							]
 						},
 						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForSellingEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetServiceProvidersForSellingEDaler.md)\n\nAllows the client to retrieve a list of available service providers that can be used to sell eDaler.\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PId` | ID of service provider. |\n| `PType` | Type (class name) of service provider. |\n| `PName` | Displayable name for service provider. |\n| `PIconUrl` | Optional reference to icon that can be displayed together with the name. |\n| `PIconWidth` | Width of optional icon. |\n| `PIconHeight` | Height of optional icon. |\n| `PTemplateId` | Reference to optional smart contract. If provided, a smart contract needs to be created based on this template, and then signed by the client, to sell eDaler using the service provider. The contract contains necessary parameters and information for the service provider to be able to process the request. If a contract template is not provided, it can be assued the service provider will collect the information via a web page, that the client must open and complete. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment Options For Buying eDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"serviceId\": \"\",\r\n\t\"serviceProvider\": \"\",\r\n\t\"successUrl\": \"https://www.example.com/success\",\r\n\t\"failureUrl\": \"https://www.example.com/fail\",\r\n\t\"cancelUrl\": \"https://www.example.com/cancel\",\r\n\t\"transactionId\": \"\",\r\n\t\"tabId\": \"\",\r\n\t\"functionName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetPaymentOptionsForBuyingEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetPaymentOptionsForBuyingEDaler"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetPaymentOptionsForBuyingEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetPaymentOptionsForBuyingEDaler.md)\n\nAllows the client to initiate the process of getting payment options for buying eDaler.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `Id` | ID of transaction. |\n| `State` | State of transaction. Possible values are `Created`, `Preparing`, `Prepared`, `Executing`, `Executed`, `Committing`, `Committed`, `RollingBack`, `RolledBack` and `Error`. |\n| `Started` | When transaction started. |\n| `Ended` | When (if) transaction ended. |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PClientUrl` | URL to third-party web page that the client needs to open and complete, for the transaction to take place. |"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment Options For Selling eDaler",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"serviceId\": \"\",\r\n\t\"serviceProvider\": \"\",\r\n\t\"successUrl\": \"https://www.example.com/success\",\r\n\t\"failureUrl\": \"https://www.example.com/fail\",\r\n\t\"cancelUrl\": \"https://www.example.com/cancel\",\r\n\t\"transactionId\": \"\",\r\n\t\"tabId\": \"\",\r\n\t\"functionName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/Agent/Wallet/GetPaymentOptionsForSellingEDaler",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Agent",
+								"Wallet",
+								"GetPaymentOptionsForSellingEDaler"
+							]
+						},
+						"description": "[https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetPaymentOptionsForSellingEDaler.md](https://lab.tagroot.io/Documentation/Neuron/Agent/Wallet/GetPaymentOptionsForSellingEDaler.md)\n\nAllows the client to initiate the process of getting payment options for selling eDaler.\n\n## Input Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PTransactionId` | Optional ID of transaction. |\n| `PTabId` | Optional TAB ID. Used by `Events.js`, and can be used to inform the client when a change is reported for the transaction. |\n| `PFunctionName` | Optional name of Javascript function to call if `Events.js` is included, and a Tab ID is reported. |\n\n## Response Parameters\n\n| Parameter | Description |\n| --- | --- |\n| `Id` | ID of transaction. |\n| `State` | State of transaction. Possible values are `Created`, `Preparing`, `Prepared`, `Executing`, `Executed`, `Committing`, `Committed`, `RollingBack`, `RolledBack` and `Error`. |\n| `Started` | When transaction started. |\n| `Ended` | When (if) transaction ended. |\n| `PServiceId` | ID of service to use. |\n| `PServiceProvider` | ID of service provider publishing the service selected. |\n| `PSuccessUrl` | Optional URL to call from Client web page, when the transaction has concluded successfully. |\n| `PFailureUrl` | Optional URL to call from Client web page, if the transaction fails. |\n| `PCancelUrl` | Optional URL to call from Client web page, if the client cancels the transaction. |\n| `PClientUrl` | URL to third-party web page that the client needs to open and complete, for the transaction to take place. |"
 					},
 					"response": []
 				},
