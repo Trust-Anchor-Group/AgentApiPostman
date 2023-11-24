@@ -54,6 +54,9 @@
 									"data = pm.request.body;\r",
 									"body = data[data.mode];\r",
 									"jData = JSON.parse(body);\r",
+									"if(jData[\"userName\"].includes(\"@\")){\r",
+									"    throw new Error(\"Username can not contain @ character\");\r",
+									"}\r",
 									"\r",
 									"pm.environment.set(\"accountUsername\", jData[\"userName\"]);\r",
 									"pm.environment.set(\"accountPassword\", jData[\"password\"]);\r",
@@ -66,8 +69,7 @@
 									"\r",
 									"signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(s, key));\r",
 									"pm.environment.set(\"signature\", signature);\r",
-									"\r",
-									"//console.log(pm.environment.get(\"nonce\"))"
+									""
 								],
 								"type": "text/javascript"
 							}
